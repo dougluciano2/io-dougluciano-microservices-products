@@ -1,0 +1,46 @@
+# Define a versão do Docker Compose. '3.8' ou mais recente é uma boa escolha.
+version: '3.8'
+
+# Define a lista de serviços (containers) que nossa aplicação precisa.
+services:
+  # O nome do nosso serviço de banco de dados.
+  postgres-db:
+    # A imagem Docker que queremos usar. É uma boa prática usar uma versão específica.
+    # 'postgres:16-alpine' é uma versão recente e leve.
+    image: postgres:16-alpine
+    # Um nome amigável para o nosso container.
+    container_name: catalog-postgres
+    # Variáveis de ambiente necessárias para inicializar o container do PostgreSQL.
+    # Estes valores PRECISAM ser os mesmos que você vai usar no seu application.properties.
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    # Mapeia a porta 5432 do container para a porta 5432 da sua máquina local (host).
+    # Isso permite que sua aplicação rodando na IDE se conecte ao banco no container.
+    ports:
+      - "5432:5432"
+    # Monta um volume para persistir os dados do banco.
+    # Sem isso, você perderia todos os dados ao remover o container.
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # Define uma rede customizada para os serviços se comunicarem.
+    # Isso será muito útil quando adicionarmos outros microserviços.
+    networks:
+      - ecommerce-network
+    # Verifica a saúde do container para garantir que o banco está pronto para aceitar conexões.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# Define os volumes que podem ser usados pelos serviços.
+volumes:
+  postgres_data:
+    driver: local
+
+# Define as redes customizadas.
+networks:
+  ecommerce-network:
+    driver: bridge
