@@ -9,6 +9,11 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+/**
+ * Identificador único da entidade.
+ * A estratégia {@code GenerationType.IDENTITY} delega a geração do valor
+ * para o próprio banco de dados (ex: colunas auto-incrementáveis).
+ */
 @Getter @Setter
 @MappedSuperclass
 public abstract class AbstractFullEntity extends AbstractEntity {
