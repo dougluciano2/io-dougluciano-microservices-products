@@ -1,7 +1,7 @@
 package io.dougluciano.microservices.products.service.implementations;
 
 import io.dougluciano.microservices.products.domain.model.Product;
-import io.dougluciano.microservices.products.repository.ProductRepository;
+import io.dougluciano.microservices.products.domain.repository.ProductRepository;
 import io.dougluciano.microservices.products.service.abstractions.AbstractGenericService;
 import org.springframework.stereotype.Service;
 

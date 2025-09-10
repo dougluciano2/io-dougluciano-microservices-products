@@ -1,4 +1,4 @@
-package io.dougluciano.microservices.products.repository;
+package io.dougluciano.microservices.products.domain.repository;
 
 import io.dougluciano.microservices.products.domain.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
