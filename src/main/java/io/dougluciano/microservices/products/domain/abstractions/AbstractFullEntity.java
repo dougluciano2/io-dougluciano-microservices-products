@@ -7,7 +7,8 @@ import jakarta.persistence.PreUpdate;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+
 
 /**
  * Identificador único da entidade.
@@ -19,20 +20,20 @@ import java.time.LocalDateTime;
 public abstract class AbstractFullEntity extends AbstractEntity {
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(name = "created_by")
     private String createdBy;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Column(name = "updated_by", nullable = true)
     private String updatedBy;
 
     @PrePersist
     public void onPrePersist(){
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
         this.createdBy = "testuser";
@@ -40,7 +41,7 @@ public abstract class AbstractFullEntity extends AbstractEntity {
 
     @PreUpdate
     public void onPreUpdate(){
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = Instant.now();
         this.updatedBy = "testuser";
     }
 
