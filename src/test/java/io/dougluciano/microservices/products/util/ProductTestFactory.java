@@ -1,5 +1,6 @@
 package io.dougluciano.microservices.products.util;
 
+import io.dougluciano.microservices.products.api.dto.ProductDTO;
 import io.dougluciano.microservices.products.domain.model.Product;
 
 import java.math.BigDecimal;
@@ -77,6 +78,44 @@ public final class ProductTestFactory {
         product.setPrice(new BigDecimal("99.999"));
         return product;
     }
+
+    /**
+     * Cria um ProductDTO válido
+     */
+    public static ProductDTO aValidDTOProduct(){
+        ProductDTO newProductDto= new ProductDTO();
+        newProductDto.setName("Produto Novo Criado");
+        newProductDto.setPrice(new BigDecimal("123.45"));
+        newProductDto.setSku("SKU-NEW-01");
+
+        return newProductDto;
+    }
+
+    /**
+     * Cria outro ProductDTO válido
+     */
+    public static ProductDTO anotherDTOProduct(){
+        ProductDTO newProductDto= new ProductDTO();
+        newProductDto.setName("Produto Novo Criado 2");
+        newProductDto.setPrice(new BigDecimal("123.45"));
+        newProductDto.setSku("SKU-NEW-02");
+
+        return newProductDto;
+    }
+
+
+    /**
+     * Cria um ProductDTO inválido com nome em branco
+     */
+    public static ProductDTO aBlankNameDTOProduct(){
+        ProductDTO newProductDto= new ProductDTO();
+        newProductDto.setName("");
+        newProductDto.setPrice(new BigDecimal("123.45"));
+        newProductDto.setSku("SKU-NEW-01");
+
+        return newProductDto;
+    }
+
 
     /**
      * Cria uma lista de 2 produtos válidos
