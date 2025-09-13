@@ -1,7 +1,9 @@
 package io.dougluciano.microservices.products;
 
+import io.dougluciano.microservices.products.api.dto.ProductDTO;
 import io.dougluciano.microservices.products.domain.model.Product;
 import io.dougluciano.microservices.products.domain.repository.ProductRepository;
+import io.dougluciano.microservices.products.exception.ResourceNotFoundException;
 import io.dougluciano.microservices.products.service.implementations.ProductService;
 import io.dougluciano.microservices.products.util.ProductTestFactory;
 import org.junit.jupiter.api.DisplayName;
@@ -53,13 +55,13 @@ public class ProductServiceTest {
              */
             when(repository.findById(productId)).thenReturn(Optional.of(mockProduct));
 
-            Optional<Product> productFound = service.findById(productId);
+            Product productFound = service.findById(productId);
 
             /**
              * Fase de verificação
              */
-            assertThat(productFound).isPresent();
-            assertThat(productFound.get().getId()).isEqualTo(productId);
+            assertThat(productFound).isNotNull();
+            assertThat(productFound.getId()).isEqualTo(productId);
 
             verify(repository, times(1)).findById(productId);
         }
@@ -71,9 +73,10 @@ public class ProductServiceTest {
 
             when(repository.findById(productId)).thenReturn(Optional.empty());
 
-            Optional<Product> productFound = service.findById(productId);
+            assertThrows(ResourceNotFoundException.class, () -> {
+                service.findById(productId);
+            });
 
-            assertThat(productFound).isEmpty();
             verify(repository, times(1)).findById(productId);
         }
     }
@@ -182,12 +185,15 @@ public class ProductServiceTest {
         @Test
         @DisplayName("Deve chhamar o método deleteById do repositorio quando o ID é válido")
         void shouldCallRepositoryDeleteById(){
+
             Long productId = 1L;
 
+            when(repository.existsById(productId)).thenReturn(true);
             doNothing().when(repository).deleteById(productId);
 
             service.deleteById(productId);
 
+            verify(repository, times(1)).existsById(productId);
             verify(repository, times(1)).deleteById(productId);
         }
     }

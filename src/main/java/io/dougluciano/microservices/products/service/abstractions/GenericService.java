@@ -28,11 +28,12 @@ public interface GenericService<T, ID> {
     List<T> findAll();
 
     /**
-     * Busca uma entidade pelo seu identificador único.
-     * @param id o ID da entidade a ser buscada.
-     * @return um {@link Optional} contendo a entidade se encontrada, ou um {@code Optional.empty()} caso contrário.
+     * Busca uma entidade pelo seu ID e lança uma exceção se não for encontrada.
+     * @param id o ID da entidade.
+     * @return a entidade encontrada.
+     * @throws io.dougluciano.microservices.products.exception.ResourceNotFoundException se a entidade não for encontrada.
      */
-    Optional<T> findById(ID id);
+    T findById(ID id);
 
     /**
      * Salva uma nova entidade no banco de dados. Se a entidade já tiver um ID,

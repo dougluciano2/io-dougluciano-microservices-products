@@ -2,6 +2,7 @@ package io.dougluciano.microservices.products.service.implementations;
 
 import io.dougluciano.microservices.products.domain.model.Product;
 import io.dougluciano.microservices.products.domain.repository.ProductRepository;
+import io.dougluciano.microservices.products.exception.ResourceNotFoundException;
 import io.dougluciano.microservices.products.service.abstractions.AbstractGenericService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,19 +46,18 @@ public class ProductService extends AbstractGenericService<Product, Long> {
 
     @Override
     @Transactional
-    public Product update(Long id, Product toUpdate){
-        return repository.findById(id)
-                .map(existingProduct -> {
-                    if (!existingProduct.getSku().equals(toUpdate.getSku())){
-                        throw new IllegalArgumentException("O SKU de um produto não pode ser alterado!");
-                    }
+    public Product update(Long id, Product toUpdate) {
+        Product existingProduct = this.findById(id);
 
-                    existingProduct.setName(toUpdate.getName());
-                    existingProduct.setDescription(toUpdate.getDescription());
-                    existingProduct.setPrice(toUpdate.getPrice());
+        if (toUpdate.getSku() != null && !existingProduct.getSku().equals(toUpdate.getSku())) {
+            throw new IllegalArgumentException("O SKU de um produto não pode ser alterado!");
+        }
 
-                    return repository.save(existingProduct);
-                })
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado com o ID #" + id));
+        existingProduct.setName(toUpdate.getName());
+        existingProduct.setDescription(toUpdate.getDescription());
+        existingProduct.setPrice(toUpdate.getPrice());
+
+        return repository.save(existingProduct);
+
     }
 }

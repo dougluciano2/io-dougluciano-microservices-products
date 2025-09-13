@@ -1,5 +1,6 @@
 package io.dougluciano.microservices.products.service.abstractions;
 
+import io.dougluciano.microservices.products.exception.ResourceNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,10 +48,12 @@ public abstract class AbstractGenericService<T, ID>  implements GenericService<T
         return repository.findAll();
     }
 
+
     @Override
     @Transactional(readOnly = true)
-    public Optional<T> findById(ID id) {
-        return repository.findById(id);
+    public T findById(ID id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Recurso com ID #" + id + " não encontrado"));
     }
 
     @Override
@@ -77,11 +80,11 @@ public abstract class AbstractGenericService<T, ID>  implements GenericService<T
     @Override
     @Transactional
     public void deleteById(ID id) {
-        /**
-         * TODO
-         * A lógica será aprimorada na issue de Tratamento de Exceções para
-         * verificar se a entidade existe antes de tentar deletar.
-         */
+
+        if(!repository.existsById(id)){
+            throw new ResourceNotFoundException("Recurso com ID #" + id + " não encontrado");
+        }
+
         repository.deleteById(id);
     }
 

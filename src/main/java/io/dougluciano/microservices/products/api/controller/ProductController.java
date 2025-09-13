@@ -61,13 +61,11 @@ public class ProductController {
     public ResponseEntity<ProductDTO> findById(@PathVariable Long id){
 
         log.info(LogMessages.FIND_BY_ID_REQUEST.getValue(), id, LocalDateTime.now());
-        Optional<Product> product = productService.findById(id);
+        Product product = productService.findById(id);
 
         log.info(LogMessages.RESOURCE_BY_ID_FOUND_SUCCESS.getValue(), id);
         // Quando implementarmos o Exception Handler, isso será refatorado
-        return product
-                .map(p -> ResponseEntity.ok(productMapper.toDTO(p)))
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(productMapper.toDTO(product));
     }
 
     /**
@@ -102,17 +100,12 @@ public class ProductController {
 
         log.info(LogMessages.UPDATE_REQUEST.getValue(), id);
 
-        Optional<Product> product = productService.findById(id);
-
-        if (product.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
-
-        Product existingProduct = product.get();
+        Product existingProduct = productService.findById(id);
 
         productMapper.updateEntityFromDTO(productDTO, existingProduct);
 
-        Product updated = productService.save(existingProduct);
+        Product updated = productService.update(id, existingProduct);
+
         log.info(LogMessages.RESOURCE_UPDATED_SUCCESS.getValue(), id);
 
         return ResponseEntity.ok(productMapper.toDTO(updated));
@@ -125,12 +118,8 @@ public class ProductController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info(LogMessages.DELETE_REQUEST.getValue(), id);
 
-        if (productService.findById(id).isEmpty()) {
-            log.info(LogMessages.RESOURCE_NOT_FOUND.getValue(), id);
-            return ResponseEntity.notFound().build();
-        }
-
         productService.deleteById(id);
+
         log.info(LogMessages.RESOURCE_DELETED_SUCCESS.getValue(), id);
         return ResponseEntity.noContent().build();
     }
