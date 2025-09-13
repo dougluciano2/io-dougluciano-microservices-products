@@ -80,6 +80,7 @@ gradlew.bat
 ### Test Reports ###
 test-output/
 surefire-reports/
+/target/
 jacoco.exec
 
 ### Arquivos de configuração de container/Docker ###
